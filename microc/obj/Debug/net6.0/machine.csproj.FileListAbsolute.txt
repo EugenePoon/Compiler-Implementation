@@ -1,0 +1,15 @@
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\bin\Debug\net6.0\machine.exe
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\bin\Debug\net6.0\machine.deps.json
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\bin\Debug\net6.0\machine.runtimeconfig.json
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\bin\Debug\net6.0\machine.dll
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\bin\Debug\net6.0\machine.pdb
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\obj\Debug\net6.0\machine.csproj.AssemblyReference.cache
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\obj\Debug\net6.0\machine.GeneratedMSBuildEditorConfig.editorconfig
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\obj\Debug\net6.0\machine.AssemblyInfoInputs.cache
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\obj\Debug\net6.0\machine.AssemblyInfo.cs
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\obj\Debug\net6.0\machine.csproj.CoreCompileInputs.cache
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\obj\Debug\net6.0\machine.dll
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\obj\Debug\net6.0\refint\machine.dll
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\obj\Debug\net6.0\machine.pdb
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\obj\Debug\net6.0\machine.genruntimeconfig.cache
+D:\AAA大学文件\2022编译原理\plzoofs-master\plzoofs-master\microc\obj\Debug\net6.0\ref\machine.dll

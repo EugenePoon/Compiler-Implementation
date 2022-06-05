@@ -1,0 +1,68 @@
+{
+  "format": 1,
+  "restore": {
+    "d:\\AAA大学文件\\2022编译原理\\plzoofs-master\\plzoofs-master\\microc\\tempCodeRunnerFile.fsproj": {}
+  },
+  "projects": {
+    "d:\\AAA大学文件\\2022编译原理\\plzoofs-master\\plzoofs-master\\microc\\tempCodeRunnerFile.fsproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "d:\\AAA大学文件\\2022编译原理\\plzoofs-master\\plzoofs-master\\microc\\tempCodeRunnerFile.fsproj",
+        "projectName": "tempCodeRunnerFile",
+        "projectPath": "d:\\AAA大学文件\\2022编译原理\\plzoofs-master\\plzoofs-master\\microc\\tempCodeRunnerFile.fsproj",
+        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
+        "outputPath": "d:\\AAA大学文件\\2022编译原理\\plzoofs-master\\plzoofs-master\\microc\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://nuget.cdn.azure.cn/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "FSharp.Core": {
+              "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[6.0.2, )",
+              "generatePathProperty": true
+            },
+            "FsLexYacc": {
+              "target": "Package",
+              "version": "[10.2.0, )",
+              "generatePathProperty": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
