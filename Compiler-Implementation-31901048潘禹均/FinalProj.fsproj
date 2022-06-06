@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <FsLex Include="MyLex.fsl">
+      <OtherFlags>--module CLex --unicode</OtherFlags>
+    </FsLex>
+    <FsYacc Include="MyPar.fsy">
+      <OtherFlags>--module CPar</OtherFlags>
+    </FsYacc>
+    <Compile Include="AbstractSyntax.fs" />
+    <Compile Include="MyPar.fs" />
+    <Compile Include="MyLex.fs" />
+    <Compile Include="Debug.fs" />
+    <Compile Include="Parse.fs" />
+    <Compile Include="Assembly.fs" />
+    <Compile Include="Combile.fs" />
+    <Compile Include="ParseAndComp.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FsLexYacc" Version="10.2.0" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,157 @@
+{
+ 
+module MyLex=
+  
+open FSharp.Text.Lexing
+open MyPar;
+
+let lexemeAsString lexbuf = 
+    LexBuffer<char>.LexemeString lexbuf
+
+let keyword s =
+    match s with
+    | "char"    -> CHAR 
+    | "else"    -> ELSE
+    | "false"   -> CSTBOOL 0
+    | "if"      -> IF
+    | "int"     -> INT
+    | "float"   -> FLOAT
+    | "null"    -> NULL
+    | "print"   -> PRINT
+    | "println" -> PRINTLN
+    | "return"  -> RETURN
+    | "true"    -> CSTBOOL 1
+    | "void"    -> VOID 
+    | "do"      -> DO
+    | "case"    -> CASE    
+    | "switch"  -> SWITCH   
+    | "while"   -> WHILE   
+    | "for"     -> FOR     
+    | "in"      -> IN 
+    | "break"   -> BREAK
+    | "continue"-> CONTINUE
+    | "string"  -> STRING
+    | "try"     -> TRY
+    | "catch"   -> CATCH
+    | "throw"   -> THROW
+    | "struct"  -> STRUCT
+    | "sleep"   -> SLEEP
+    | _         -> NAME s
+ 
+let cEscape s = 
+    match s with 
+    | "\\\\" -> '\\'
+    | "\\\"" -> '\"'
+    | "\\a"  -> '\007'
+    | "\\b"  -> '\008'
+    | "\\t"  -> '\t'
+    | "\\n"  -> '\n'
+    | "\\v"  -> '\011'
+    | "\\f"  -> '\012'
+    | "\\r"  -> '\r'
+    | _      -> failwith "Lexer error: impossible C escape"
+}
+ // PLUSEQ MINUSEQ TIMESEQ DIVEQ MODEQ
+ //   | "0b"['0'-'1']+  { CSTINT (binaryToDecimal (lexemeAsString lexbuf)) }
+//                     // binaryToDecimal需要将二进制字符串转换为十进制int值
+//   | "0"['0'-'7']+  { CSTINT (OctalToDecimal (lexemeAsString lexbuf)) }
+//                     // OctalToDecimal需要将二进制字符串转换为八进制int值
+//   | "0x"['0'-'9' 'a'-'e' 'A'-'E']+ {CSTINT (HexadeToDecimal (lexemeAsString lexbuf))}
+//                     // HexadeToDecimal需要将二进制字符串转换为十六进制int值
+
+rule Token = parse
+  | [' ' '\t' '\r'] { Token lexbuf }
+  | '\n'            { lexbuf.EndPos <- lexbuf.EndPos.NextLine; Token lexbuf }
+  | ['0'-'9']+      { CSTINT (System.Int32.Parse (lexemeAsString lexbuf)) }  
+                    //  System.Int32.Parse 将 字符串转换为 int 类型
+  | ['0'-'9']+'.'['0'-'9']+ 
+                    { CSTFLOAT (System.Single.Parse (lexemeAsString lexbuf)) }  
+                    // System.Single.Parse将字符串转换为单精度浮点数
+  | ['_''a'-'z''A'-'Z']['a'-'z''A'-'Z''0'-'9']*
+                    { keyword (lexemeAsString lexbuf) }     (*support _*)
+  | '+'             { PLUS } 
+  | '-'             { MINUS } 
+  | '*'             { TIMES } 
+  | '/'             { DIV } 
+  | "++"            { SELFPLUS } 
+  | "--"            { SELFMINUS} 
+  | "+="            { PLUSEQ }
+  | "-="            { MINUSEQ }
+  | "*="            { TIMESEQ }
+  | "/="            { DIVEQ }
+  | "%="            { MODEQ}
+  | '%'             { MOD }                     
+  | '='             { ASSIGN } 
+  | ".."            { RANGE  }
+  | "=="            { EQ } 
+  | "!="            { NE }
+  | '>'             { GT }
+  | '<'             { LT }
+  | ':'             { COLON }           (*casecase*)
+  | '?'             { QUEST } 
+  | ">="            { GE }
+  | "<="            { LE }
+  | "||"            { SEQOR }                     
+  | "&&"            { SEQAND }                     
+  | "&"             { AMP }  
+  | "."             { DOT }   
+  | "!"             { NOT }                     
+  | '('             { LPAR }
+  | ')'             { RPAR }
+  | '{'             { LBRACE }
+  | '}'             { RBRACE }
+  | '['             { LBRACK }
+  | ']'             { RBRACK }
+  | ';'             { SEMI }
+  | ','             { COMMA }
+  | "//"            { EndLineComment lexbuf; Token lexbuf }
+  | "/*"            { Comment lexbuf; Token lexbuf }
+  | "(*"            { Comment lexbuf; Token lexbuf }
+  | '"'             { CSTSTRING (String [] lexbuf) }
+  | ['\'']['a'-'z''A'-'Z''0'-'9']['\'']            
+                    { try let single = lexemeAsString lexbuf in CSTCHAR (System.Char.Parse(single.Substring(1, 1))) with ex -> failwith "Char literal error." }
+  | eof             { EOF }
+  | _               { failwith "Lexer error: illegal symbol" }
+
+and Comment = parse
+   | "/*"           { Comment lexbuf; Comment lexbuf }
+   | "*/"           { () }
+   | "(*"           { Comment lexbuf; Comment lexbuf }
+   | "*)"           { () }
+   | '\n'           { lexbuf.EndPos <- lexbuf.EndPos.NextLine; Comment lexbuf }
+   | (eof | '\026') { failwith "Lexer error: unterminated comment" }
+   | _              { Comment lexbuf }
+
+and EndLineComment = parse
+   | '\n'           { lexbuf.EndPos <- lexbuf.EndPos.NextLine }
+   | (eof | '\026') { () }
+   | _              { EndLineComment lexbuf }
+
+//  { CSTINT (binaryToDecimal (lexemeAsString lexbuf)) }
+// and binaryToDecimal = parse
+//     |"0b"['0'-'1']+ {}
+
+and String chars = parse 
+  | '"'
+      { Microsoft.FSharp.Core.String.concat "" (List.map string (List.rev chars)) }
+  | '\\' ['\\' '"' 'a' 'b' 't' 'n' 'v' 'f' 'r']
+      { String (cEscape (lexemeAsString lexbuf) :: chars) lexbuf }
+  | "''" 
+      { String ('\'' :: chars) lexbuf }
+  | """" 
+      { String ('\"' :: chars) lexbuf }
+  | '\\'
+      { failwith "Lexer error: illegal escape sequence" }
+  | (eof | '\026')
+      { failwith "Lexer error: unterminated string" }
+  | ['\n' '\r']
+      { failwith "Lexer error: newline in string" }
+  | ['\000'-'\031' '\127' '\255']
+      { failwith "Lexer error: invalid character in string" }
+  | _
+      { String (char (lexbuf.LexemeChar 0) :: chars) lexbuf }
+
+
+
+
+ 
