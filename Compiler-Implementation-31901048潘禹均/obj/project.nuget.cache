@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "hCTo1Y4PPwVkHsgkIbg36QEoNE1DrAfAf8RkSqPj0YGEnGcT19iaEefASVmPmACRg/zOw5WCbKdmXfwUHhhDOA==",
+  "success": true,
+  "projectFilePath": "D:\\Desktop\\学习\\2020-2021下\\编程语言原理与编译\\finalProj\\FinalProj\\FinalProj.fsproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Administrator\\.nuget\\packages\\fsharp.core\\5.0.0\\fsharp.core.5.0.0.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\fslexyacc\\10.2.0\\fslexyacc.10.2.0.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\fslexyacc.runtime\\10.2.0\\fslexyacc.runtime.10.2.0.nupkg.sha512"
+  ],
+  "logs": []
+}
