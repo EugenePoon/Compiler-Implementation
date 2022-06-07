@@ -1,6 +1,9 @@
 
 module AbstractSyn
 
+// 基本类型
+// 注意，数组、指针是递归类型
+
 type typ = 
   | TypInt
   | TypChar
@@ -11,7 +14,7 @@ type typ =
   | TypPoint of typ
   | Lambda of typ option * (typ * string) list * statement
  
-and expr =
+and expr =                                // 表达式，右值 
   | Access of access
   | Assign of access * expr
   | Addr of access
@@ -28,7 +31,7 @@ and expr =
   | Orelse of expr * expr
   | Call of string * expr list
 
-and access = 
+and access =                               //左值，存储的位置  
   | AccVar of string
   | AccDeref of expr
   | AccIndex of access * expr
@@ -37,7 +40,6 @@ and statement =
   | If of expr * statement * statement
   | While of expr * statement
   | DoWhile of statement * expr
-  | DoUntil of stmt * expr
   | Expr of expr
   | Return of expr option
   | Block of statementDec list
@@ -50,16 +52,18 @@ and statement =
   | Break
   | Continue
   | Sleep of expr
-
+// 语句块内部，可以是变量声明 或语句的列表 
 and statementDec = 
   | Dec of typ * string
-  | DecAsg of typ * string * expr
-  | Stmt of statement
+  | DecAsg of typ * string * expr           //变量赋值
+  | Stmt of statement   
 
+// 顶级声明 可以是函数声明或变量声明
 and topDec = 
   | FunDec of typ option * string * (typ * string) list * statement
   | VarDec of typ * string
-  | VarDecAsg of typ * string * expr
+  | VarDecAsg of typ * string * expr        //变量赋值
  
+// 程序是顶级声明的列表
 and program = 
   | Prog of topDec list

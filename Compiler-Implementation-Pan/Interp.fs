@@ -270,6 +270,7 @@ let rec exec statement (locEnv: locEnv) (gloEnv: gloEnv) (store: store) : store 
 
         loop store
 
+// new -------------------------------------------------------
     | For(dec, e, opera,body) -> 
         let (res ,store0) = eval dec locEnv gloEnv store
         let rec loop store1 =
@@ -292,7 +293,25 @@ let rec exec statement (locEnv: locEnv) (gloEnv: gloEnv) (store: store) : store 
             else
                 store2 //退出循环返回 环境store2
         loop(exec body locEnv gloEnv store)
-
+    
+    | Range(dec,i1,i2,body) ->
+        let rec tmp stat =
+            match stat with
+            | Access (c) -> c
+        let ass = Assign (tmp dec,i1)
+        let (v, store0) = eval ass locEnv gloEnv store
+        let rec loop store1 =
+            //求值 循环条件,注意变更环境 store
+            let judge = BinaryPrim ("<",Access (tmp dec),i2)
+            let opera = Assign (tmp dec, BinaryPrim ("+",Access (tmp dec),CstInt 1))
+            let (v1, store3) = eval judge locEnv gloEnv store1
+            // 继续循环
+            if (v1<>0) then let (res ,store4) = eval opera locEnv gloEnv (exec body locEnv gloEnv store3)
+                            loop store4
+            else
+                store3 //退出循环返回 环境store2
+        loop store0
+        
     | Switch(e,body) ->
         let (res, store1) = eval e locEnv gloEnv store
         let rec choose list =
@@ -304,7 +323,12 @@ let rec exec statement (locEnv: locEnv) (gloEnv: gloEnv) (store: store) : store 
             | [] -> store1
         (choose body)
 
+    | Default(body) -> exec body locEnv gloEnv store
+    
     | Case(e,body) -> exec body locEnv gloEnv store
+
+    | Break -> failwith("break not done")
+    | Continue -> failwith("continue not done")
     
     | Expr e ->
         // _ 表示丢弃e的值,返回 变更后的环境store1
@@ -329,7 +353,7 @@ and statementordec statementordec locEnv gloEnv store =
     match statementordec with
     | Stmt statement -> (locEnv, exec statement locEnv gloEnv store)
     | Dec (typ, x) -> allocate (typ, x) locEnv store
-
+    
 (* Evaluating micro-C expressions *)
 
 and eval e locEnv gloEnv store : int * store =

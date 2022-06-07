@@ -198,10 +198,8 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) (lablist : LabEnv) (C : i
       cExpr e1 varEnv funEnv lablist (addINCSP -1 (addJump jumptest (Label labStart :: C3)))
     | DoWhile(body, e)    ->
       let labBegin = newLabel()
-
       let (labEnd, c) = addLabel C
       let lablist = labEnd :: labBegin :: lablist
-
       let C1 = 
         cExpr e varEnv funEnv lablist (IFNZRO labBegin :: c)
       Label labBegin :: cStmt body varEnv funEnv lablist C1

@@ -21,7 +21,7 @@ let third   (_, _, c) = c
 %token <float32> CSTFLOAT
 %token <char> CSTCHAR
 
-%token CHAR ELSE IF INT NULL PRINT PRINTLN RETURN VOID WHILE FLOAT SWITCH CASE DEFAULT FOR IN RANGE STRING DO LOOP CONTINUE BREAK UNTIL SLEEP
+%token CHAR ELSE IF INT NULL PRINT PRINTLN RETURN VOID WHILE FLOAT SWITCH CASE DEFAULT FOR IN RANGE STRING DO LOOP CONTINUE BREAK  SLEEP
 %token PLUS MINUS TIMES DIV MOD AUTOPLUS AUTOMINUS
 %token EQ NE GT LT GE LE
 %token NOT SEQOR SEQAND
@@ -135,7 +135,6 @@ StmtM:  /* No unbalanced if-else */
   | IF LPAR Expr RPAR StmtM ELSE StmtM  { If($3, $5, $7)       }
   | WHILE LPAR Expr RPAR StmtM          { While($3, $5)        }
   | DO StmtM WHILE LPAR Expr RPAR SEMI  { DoWhile($2, $5) }
-  | DO StmtM UNTIL LPAR Expr RPAR SEMI  { DoUntil($2, $5) }
   | SWITCH LPAR Expr RPAR LBRACE StmtCase RBRACE    { Switch($3, $6) }
   | SLEEP LPAR Expr RPAR SEMI           { Sleep($3)}        
 ;
@@ -152,7 +151,6 @@ StmtU:
   | IF LPAR Expr RPAR Stmt              { If($3, $5, Block []) }
   | WHILE LPAR Expr RPAR StmtU          { While($3, $5)        }
   | DO StmtU WHILE LPAR Expr RPAR SEMI  { DoWhile($2, $5) }
-  | DO StmtU UNTIL LPAR Expr RPAR SEMI  { DoUntil($2, $5) }
 ;
 
 Expr: 
