@@ -32,16 +32,23 @@
 
 ## 2.文件说明
 
-### interpreter  解释器
-
-```
-AbstractSyn.fs         	 抽象语法
-lex.fsl				     fslex词法定义
-par.fsy					 fsyacc语法定义
-Parse.fs				 语法解析器
-Interp.fs				 解释器
-test/ex1.c-ex12.c 		 例子程序
-interpc.fsproj			 项目文件
+```sh
+AbstractSyn.fs         	 #抽象语法树
+lex.fsl				     #fslex词法定义
+par.fsy					 #fsyacc语法定义
+Lex.fs					 #由Lex.fsl生成的词法分析
+Par.fs 					 #由Par.fsy生成的语法分析
+Contcomp.fs				 #编译器
+Parse.fs				 #语法解析器
+Interp.fs				 #解释器
+Machine.fs				 #指令集定义
+test/ex1.c-ex12.c 		 #测试用例
+microcc.fsproj			 #编译器项目文件
+interpc.fsproj			 #解释器项目文件
+Machine.java			 #虚拟机 *.java文件
+Machine.class			 #虚拟机输出结果
+Machinetrace.class		 #虚拟机输出栈追踪
+assets					 #截图文件夹
 ```
 
 
@@ -803,7 +810,7 @@ interpc.fsproj			 项目文件
 | For循环         | for.c       | √    |      |      |
 | For in Range    | forRange.c  | √    |      |      |
 | Loop循环        | loop.c      |      | √    |      |
-| 自增自减功能    | selfPlus.c  | √    |      |      |
+| 自增自减功能    | selfPlus.c  |      | √    |      |
 
 ## 6.项目成员
 
@@ -813,7 +820,9 @@ interpc.fsproj			 项目文件
 
 ## 7.提交日志
 
+![1654631723564](assets/1654631723564.png)
 
+项目地址：
 
 ## 8.心得体会
 
