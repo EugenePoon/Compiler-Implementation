@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="AbstractSyn.fs" />
+    <Compile Include="Debug.fs" />
+    <Compile Include="Par.fs" />
+    <Compile Include="Lex.fs" />
+    <Compile Include="Parse.fs" />
+    <Compile Include="Machine.fs" />
+    <Compile Include="Contcomp.fs" />
+    <Compile Include="MicroCC.fs" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FsLexYacc" Version="10.0.0" />
+  </ItemGroup>
+
+</Project>

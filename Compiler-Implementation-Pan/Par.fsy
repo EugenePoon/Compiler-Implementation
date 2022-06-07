@@ -1,0 +1,244 @@
+%{
+
+open AbstractSyn
+
+
+// Vardesc 返回的是一个 元组 (g,s)
+// g是类型构造函数，s是变量名
+// compose1 函数 取出 类型构造子 g，用类型复合机制构造类型。
+
+let compose1 f (g, s) = ((fun x -> g(f(x))), s)
+let nl = CstInt 10 //  \n 的 ASCII 码
+
+let first   (a, _, _) = a
+let second  (_, b, _) = b
+let third   (_, _, c) = c
+
+%}
+
+%token <int> CSTINT CSTBOOL  // <int> 是词元的语义值类型
+%token <string> CSTSTRING NAME
+%token <float32> CSTFLOAT
+%token <char> CSTCHAR
+
+%token CHAR ELSE IF INT NULL PRINT PRINTLN RETURN VOID WHILE FLOAT SWITCH CASE DEFAULT FOR IN RANGE STRING DO LOOP CONTINUE BREAK UNTIL SLEEP
+%token PLUS MINUS TIMES DIV MOD AUTOPLUS AUTOMINUS
+%token EQ NE GT LT GE LE
+%token NOT SEQOR SEQAND
+%token LPAR RPAR LBRACE RBRACE LBRACK RBRACK SEMI COMMA ASSIGN AMP QUEST COLON
+%token EOF
+
+%right ASSIGN             /* 最低优先级 */
+%nonassoc PRINT
+%left COLON QUEST
+%left SEQOR
+%left SEQAND
+%left EQ NE 
+%left GT LT GE LE
+%left PLUS MINUS
+%left TIMES DIV MOD 
+%right NOT AMP AUTOPLUS AUTOMINUS
+%nonassoc LBRACK          /* 最高优先级 */
+
+%start Main            // 语法开始符号
+%type <AbstractSyn.program> Main   // 开始符号，对应抽象语法树节点类型, program
+
+%%
+
+Main:
+    TopDecs EOF                         { Prog $1 }  // { }内是合法的F#代码
+                                        // $1 是 TopDecs的语义值， Prog $1 返回抽象语法树根节点，也就是整个程序
+;                                       // 规则结束符
+
+TopDecs:
+    /* empty */                         { [] }
+  | TopDec TopDecs                      { $1 :: $2 }
+;
+
+TopDec: 
+    VarDec SEMI                         { VarDec (fst $1, snd $1) }
+  | VarDecAsg SEMI                      { VarDecAsg (first $1, second $1, third $1)}
+  | FunDec                              { $1 }
+;
+
+
+/*                                               
+变量声明  由于C 类型声明的复杂性，这里用了函数式编程的技巧来辅助类型构造
+*/
+
+VarDec:
+    Type VarDescribe                   { ((fst $2) $1, snd $2) }
+;
+
+VarDecAsg:
+    Type VarDescribe ASSIGN Expr         { ((fst $2) $1, snd $2, $4) }
+;
+
+/*
+ 变量描述
+NAME  "n"   (fun t->t, "n") 返回一个元组，第一个元素，是类型构造函数，在Vardec 规则中使用
+*/ 
+
+// 变量描述
+VarDescribe:                         
+    NAME                                    { ((fun t -> t), $1)                      }
+  | TIMES VarDescribe                       { compose1 TypPoint $2                        }                                 
+  | LPAR VarDescribe RPAR                   { $2                                      } 
+  | VarDescribe LBRACK RBRACK               { compose1 (fun t -> TypArray(t, None)) $1    }
+  | VarDescribe LBRACK CSTINT RBRACK        { compose1 (fun t -> TypArray(t, Some $3)) $1 }
+;
+
+FunDec:
+    VOID NAME LPAR ParamDecs RPAR Block { FunDec(None,     $2, $4, $6) }
+  | Type NAME LPAR ParamDecs RPAR Block { FunDec(Some($1), $2, $4, $6) }
+;
+
+// 参数列表
+ParamDecs:
+    /* empty */                         { [] }
+  | ParamNotEmptyDecs                   { $1 }
+;
+
+ParamNotEmptyDecs:
+    VarDec                              { [$1]     }
+  | VarDec COMMA ParamNotEmptyDecs      { $1 :: $3 }
+;
+
+// 花括号中的语句块
+Block:
+    LBRACE StmtOrDecSeq RBRACE          { Block $2 }
+;
+
+StmtOrDecSeq:
+    /* empty */                         { [] }
+  | Stmt StmtOrDecSeq                   { Stmt $1 :: $2 }
+  | VarDec SEMI StmtOrDecSeq            { Dec (fst $1, snd $1) :: $3 }
+  | VarDecAsg SEMI StmtOrDecSeq         { DecAsg (first $1, second $1, third $1) :: $3}
+;
+
+Stmt: 
+    StmtM                               { $1 }
+  | StmtU                               { $1 }
+;
+
+StmtM:  /* No unbalanced if-else */
+    Expr SEMI                           { Expr($1)             }
+  | BREAK SEMI                          { Break }
+  | CONTINUE SEMI                       { Continue }
+  | FOR LPAR Expr SEMI Expr SEMI Expr RPAR StmtM    { For($3, $5, $7, $9) }
+  | FOR Expr IN LPAR Expr RANGE Expr RPAR StmtM     { Range($2, $5, $7, $9) }
+  | LOOP StmtM                          { Loop($2) }
+  /* | LOOP LBRACE StmtM RBRACE */
+  | RETURN SEMI                         { Return None          }
+  | RETURN Expr SEMI                    { Return(Some($2))     }
+  | Block                               { $1                   }
+  | IF LPAR Expr RPAR StmtM ELSE StmtM  { If($3, $5, $7)       }
+  | WHILE LPAR Expr RPAR StmtM          { While($3, $5)        }
+  | DO StmtM WHILE LPAR Expr RPAR SEMI  { DoWhile($2, $5) }
+  | DO StmtM UNTIL LPAR Expr RPAR SEMI  { DoUntil($2, $5) }
+  | SWITCH LPAR Expr RPAR LBRACE StmtCase RBRACE    { Switch($3, $6) }
+  | SLEEP LPAR Expr RPAR SEMI           { Sleep($3)}        
+;
+
+StmtCase:
+    CASE AtExprNotAccess COLON StmtM            { [Case($2, $4)] }
+  | CASE AtExprNotAccess COLON StmtM StmtCase   { Case($2, $4) :: $5 }
+  | DEFAULT COLON StmtM                         { [Default($3)] }
+  | DEFAULT COLON StmtM StmtCase                { Default($3) :: $4 }
+;
+
+StmtU:
+    IF LPAR Expr RPAR StmtM ELSE StmtU  { If($3, $5, $7)       }
+  | IF LPAR Expr RPAR Stmt              { If($3, $5, Block []) }
+  | WHILE LPAR Expr RPAR StmtU          { While($3, $5)        }
+  | DO StmtU WHILE LPAR Expr RPAR SEMI  { DoWhile($2, $5) }
+  | DO StmtU UNTIL LPAR Expr RPAR SEMI  { DoUntil($2, $5) }
+;
+
+Expr: 
+    Access                              { Access $1           } //取$1的右值
+  | ExprNotAccess                       { $1                  } 
+;
+  //非左值的情况
+ExprNotAccess:
+    AtExprNotAccess                     { $1                  }
+  | Access ASSIGN Expr                  { Assign($1, $3)      } // $1为左值
+  | NAME LPAR Exprs RPAR                { Call($1, $3)        }  
+  | NOT Expr                            { UnaryPrim("!", $2)      }
+  | PRINT Expr                          { UnaryPrim("printi", $2) }
+  | PRINTLN                             { UnaryPrim("printc", nl) }
+  | Expr AUTOMINUS                      { UnaryPrim("I--", $1) }
+  | Expr AUTOPLUS                       { UnaryPrim("I++", $1) }
+  | AUTOMINUS Expr                      { UnaryPrim("--I", $2) }
+  | AUTOPLUS Expr                       { UnaryPrim("++I", $2) }
+  | Expr PLUS  Expr                     { BinaryPrim("+",  $1, $3) }
+  | Expr MINUS Expr                     { BinaryPrim("-",  $1, $3) }
+  | Expr TIMES Expr                     { BinaryPrim("*",  $1, $3) }
+  | Expr DIV   Expr                     { BinaryPrim("/",  $1, $3) }
+  | Expr MOD   Expr                     { BinaryPrim("%",  $1, $3) }
+  | Expr EQ    Expr                     { BinaryPrim("==", $1, $3) }
+  | Expr NE    Expr                     { BinaryPrim("!=", $1, $3) }
+  | Expr GT    Expr                     { BinaryPrim(">",  $1, $3) }
+  | Expr LT    Expr                     { BinaryPrim("<",  $1, $3) }
+  | Expr GE    Expr                     { BinaryPrim(">=", $1, $3) }
+  | Expr LE    Expr                     { BinaryPrim("<=", $1, $3) }
+  | Expr QUEST Expr COLON Expr          { TernaryPrim($1, $3, $5) }
+  | Expr SEQAND Expr                    { Andalso($1, $3)     }
+  | Expr SEQOR  Expr                    { Orelse($1, $3)      }
+;
+
+AtExprNotAccess:
+    //不可以为左值的的基本情况 
+    Const                               { CstInt $1             }
+  | ConstString                         { CstString($1) }
+  | ConstChar                           { CstChar($1) }
+  | ConstFloat                          { CstFloat($1) }
+  | LPAR ExprNotAccess RPAR             { $2                  } 
+  | AMP Access                          { Addr $2             } // 取地址
+;
+
+Access:    //可以为左值的情况
+    NAME                                { AccVar $1           }  // 变量 x
+  | LPAR Access RPAR                    { $2                  }  // 括号中的变量 (x)
+  | TIMES Access                        { AccDeref (Access $2)}  // 指针  *x
+  | TIMES AtExprNotAccess               { AccDeref $2         }
+  | Access LBRACK Expr RBRACK           { AccIndex($1, $3)    }
+;
+
+Exprs:
+    /* empty */                         { []       }
+  | Exprs1                              { $1       }
+;
+
+Exprs1:
+    Expr                                { [$1]     }
+  | Expr COMMA Exprs1                   { $1 :: $3 }
+;
+
+Const:
+    CSTINT                              { $1            }
+  | CSTBOOL                             { $1            }
+  | MINUS CSTINT                        { - $2          }
+  | NULL                                { -1            }
+;
+
+ConstString:
+    CSTSTRING                           { $1            }
+;
+
+ConstFloat:
+    CSTFLOAT                            { $1            }
+  | MINUS CSTFLOAT                      { - $2          }
+;
+
+ConstChar:
+    CSTCHAR                             { $1            }
+;
+
+
+Type:
+    INT                                 { TypInt        }
+  | CHAR                                { TypChar       }
+  | STRING                              { TypString     }
+  | FLOAT                               { TypFloat      }
+;
