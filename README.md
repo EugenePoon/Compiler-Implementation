@@ -1,50 +1,15 @@
-## ÎÄµµËµÃ÷
+## æ–‡æ¡£è¯´æ˜
 
-projects.pdf ÊÇ¿ÉÒÔ²Î¿¼Éè¼ÆµÄÒ»Ğ©ÓĞÈ¤µÄÓïÑÔ£¬ºÜ¶à²»ÀàËÆÓÚC
+Compiler-Implementation-Panï¼Œæ˜¯æœ¬æ¬¡å¤§ä½œä¸šçš„æ–‡æ¡£ï¼ŒåŒ…å«äº†ä»£ç å’ŒæŠ¥å‘Šã€‚
 
-Yuby ÊÇÉÏÆÚÑ§ÉúÍê³ÉµÄ´ó×÷Òµ£¬²Î¿¼ÆäÖĞ¸ñÊ½
-
-
-### report
-
-ÏîÄ¿²Î¿¼±¨¸æÎÄµµ ,×¢Òâ±¨¸æµÄ½á¹¹
- Sheets.pdf
- Funk.pdf
-
-### microC ÏîÄ¿
-
-±¾´Î´ó×÷Òµ½«Ö÷Òª´ÓmicrocÏîÄ¿µÄ»ù´¡ÉÏ½øĞĞĞŞ¸Ä¡£
-
-	microc-llvm.tar   microC ²Î¿¼ÊµÏÖ ocaml ´úÂë
-	microc.pdf ÊÇ microC ËµÃ÷ppt
-	https://gitee.com/sigcc/plzoofs/tree/master/microc   microC ²Î¿¼ÊµÏÖ F# ´úÂë
-
-### Circline ÏîÄ¿
-	Circline.tar ÏîÄ¿´úÂë
-	Circline.pdf  ±¨¸æÎÄµµ
-	Circline-presentation.pdf  ÏîÄ¿ËµÃ÷ppt
-
-### tigerÓïÑÔ 
-
-tiger-master.zip tigerµÄOcamlÊµÏÖ ÊéÉÏÊÇ Standard ML
-
-### decafÓïÑÔ
-
-JavaÊµÏÖ
+Yuby æ˜¯ä¸ŠæœŸå­¦ç”Ÿå®Œæˆçš„å¤§ä½œä¸šï¼Œå‚è€ƒå…¶ä¸­æ ¼å¼
 
 
-http://www.cs.columbia.edu/~sedwards/classes/2018/4115-fall/index.html
+### microC é¡¹ç›®
 
-### ×¢ÒâÊÂÏî
-  - Ê±¼ä½ôÆÈ£¬ÏÖÔÚ¿ªÊ¼???
-    - ´Ê·¨·ÖÎö
-    - Óï·¨·ÖÎö
-    - ÀàĞÍ¼ì²é
-    - ÖĞ¼ä´úÂëÉú³É
-    - Ä¿±ê´úÂëÉú³É£¨¿ÉÑ¡£¬µ«ÊÇ½¨ÒéÍê³É£©
-    - ÌØĞÔÍê³É
-      - ²Î¿¼[task](https://gitee.com/sigcc/plzoofs/blob/master/microc/task.md)   
+æœ¬æ¬¡å¤§ä½œä¸šå°†ä¸»è¦ä»microcé¡¹ç›®çš„åŸºç¡€ä¸Šè¿›è¡Œä¿®æ”¹ã€‚
 
-  - git ¹ÜÀíÔ´´úÂë£¬³ÉÔ±Èç¹ûÃ»ÓĞÌá½»ÈÕÖ¾£¬ÅĞ¶¨ÎªÎŞĞ§³É¼¨
-  - ÏîÄ¿ÍÅ¶ÓĞèÒªÓĞ¼¼ÊõÆÀ¼Û±í£¬Ã÷È·×Ô¼ºÊµÏÖÁËÄÄĞ©¹¦ÄÜ£¬²¢×ÔÎÒÆÀ¼Û
-  - ´ó×÷Òµ×Ô¼ºĞÄµÃÓë¶Ô¿Î³ÌµÄÆÀ¼Û
+	microc-llvm.tar   microC å‚è€ƒå®ç° ocaml ä»£ç 
+	microc.pdf æ˜¯ microC è¯´æ˜ppt
+	https://gitee.com/sigcc/plzoofs/tree/master/microc   microC å‚è€ƒå®ç° F# ä»£ç 
+
